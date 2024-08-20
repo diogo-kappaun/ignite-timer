@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 interface LinkProps {
   link: string
   title: string
-  children: any
+  children: React.ReactNode
 }
 
 export function Link({ link, title, children }: LinkProps) {
