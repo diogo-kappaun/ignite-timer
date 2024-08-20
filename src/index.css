@@ -39,3 +39,11 @@
     @apply min-h-screen antialiased bg-gray-900 text-gray-300;
   }
 }
+
+@layer utilities {
+  .picker-none {
+    &::-webkit-calendar-picker-indicator {
+      display: none !important;
+    }
+  }
+}

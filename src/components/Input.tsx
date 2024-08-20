@@ -13,7 +13,7 @@ export function Input({ variant, ...rest }: InputProps) {
     base: 'bg-transparent h-10 border-b-2 border-gray-500 font-bold text-lg px-2 text-gray-100 placeholder:text-gray-500 focus:shadow-none focus:border-green-500',
     variants: {
       variant: {
-        task: 'flex-1',
+        task: 'flex-1 picker-none',
         minutes: 'w-16',
       },
     },
