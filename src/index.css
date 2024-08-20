@@ -72,4 +72,8 @@
       @apply pr-6
      }
   }
+
+  input {
+    @apply bg-transparent h-10 border-b-2 border-gray-500 font-bold text-lg px-2 text-gray-100 placeholder:text-gray-500 focus:shadow-none focus:border-green-500
+  }
 }
