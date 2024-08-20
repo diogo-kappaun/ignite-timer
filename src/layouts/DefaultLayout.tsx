@@ -3,7 +3,7 @@ import { Header } from '../components/Header'
 
 export function DefaultLayout() {
   return (
-    <div>
+    <div className="mx-auto my-20 flex h-[calc(100vh-10rem)] max-w-[74rem] flex-col rounded-lg bg-gray-800 p-10">
       <Header />
       <Outlet />
     </div>
