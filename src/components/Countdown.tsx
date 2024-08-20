@@ -1,4 +1,8 @@
-export function CountdownNumber({ children }: any) {
+interface CountdownProps {
+  children: React.ReactNode
+}
+
+export function CountdownNumber({ children }: CountdownProps) {
   return <span className="rounded-lg bg-gray-700 px-4 py-8">{children}</span>
 }
 
