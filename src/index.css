@@ -28,7 +28,7 @@
 
 @layer base {
   * {
-    @apply focus-within:outline-none shadow-default;
+    @apply focus:outline-none focus:shadow-default;
   }
 
   html {
