@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { differenceInSeconds } from 'date-fns'
 import { Play } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
 import * as zod from 'zod'
@@ -18,11 +19,13 @@ interface Cycle {
   id: string
   task: string
   minutesAmount: number
+  startDate: Date
 }
 
 export function Home() {
   const [cycles, setCycles] = useState<Cycle[]>([])
   const [activeCycleID, setActiveCycleID] = useState<string | null>(null)
+  const [amountSecondsPassed, setAmountSecondsPassed] = useState(0)
 
   const { register, handleSubmit, watch, reset } = useForm<NewCycleFormData>({
     resolver: zodResolver(newCycleFormValidationSchema),
@@ -32,12 +35,25 @@ export function Home() {
     },
   })
 
+  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleID)
+
+  useEffect(() => {
+    if (activeCycle) {
+      setInterval(() => {
+        setAmountSecondsPassed(
+          differenceInSeconds(new Date(), activeCycle.startDate),
+        )
+      }, 1000)
+    }
+  }, [activeCycle])
+
   function handleCreateNewCycle(data: NewCycleFormData) {
     const id = String(new Date().getTime())
     const newCycle: Cycle = {
       id,
       task: data.task,
       minutesAmount: data.minutesAmount,
+      startDate: new Date(),
     }
 
     setCycles((prevState) => [...prevState, newCycle])
@@ -46,9 +62,14 @@ export function Home() {
     reset()
   }
 
-  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleID)
+  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
+  const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0
 
-  console.log(activeCycle)
+  const minutesAmount = Math.floor(currentSeconds / 60)
+  const secondsAmount = currentSeconds % 60
+
+  const minutes = String(minutesAmount).padStart(2, '0')
+  const seconds = String(secondsAmount).padStart(2, '0')
 
   const task = watch('task')
 
@@ -94,11 +115,11 @@ export function Home() {
         </div>
 
         <div className="flex gap-4 font-mono text-[10rem] leading-[8rem] text-gray-100">
-          <CountdownNumber>0</CountdownNumber>
-          <CountdownNumber>0</CountdownNumber>
+          <CountdownNumber>{minutes[0]}</CountdownNumber>
+          <CountdownNumber>{minutes[1]}</CountdownNumber>
           <CountdownSeparator />
-          <CountdownNumber>0</CountdownNumber>
-          <CountdownNumber>0</CountdownNumber>
+          <CountdownNumber>{seconds[0]}</CountdownNumber>
+          <CountdownNumber>{seconds[1]}</CountdownNumber>
         </div>
 
         <button
