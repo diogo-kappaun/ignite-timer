@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { differenceInSeconds } from 'date-fns'
-import { Play } from 'phosphor-react'
+import { HandPalm, Play } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
 import * as zod from 'zod'
 
@@ -20,6 +20,7 @@ interface Cycle {
   task: string
   minutesAmount: number
   startDate: Date
+  interruptedDate?: Date
 }
 
 export function Home() {
@@ -69,6 +70,22 @@ export function Home() {
     reset()
   }
 
+  function handleInterruptCycle() {
+    setCycles(
+      cycles.map((cycle) => {
+        if (cycle.id === activeCycleID) {
+          return { ...cycle, interruptedDate: new Date() }
+        } else {
+          return cycle
+        }
+      }),
+    )
+
+    setActiveCycleID(null)
+  }
+
+  console.log(cycles)
+
   const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
   const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0
 
@@ -102,6 +119,7 @@ export function Home() {
             className="picker-none flex-1"
             list="task-suggestions"
             placeholder="Dê um nome para o seu projeto"
+            disabled={!!activeCycle}
             {...register('task')}
           />
 
@@ -121,6 +139,7 @@ export function Home() {
             step={5}
             min={5}
             max={60}
+            disabled={!!activeCycle}
             {...register('minutesAmount', { valueAsNumber: true })}
           />
 
@@ -135,13 +154,23 @@ export function Home() {
           <CountdownNumber>{seconds[1]}</CountdownNumber>
         </div>
 
-        <button
-          className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-500 p-4 font-bold text-gray-100 transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:bg-green-500"
-          type="submit"
-          disabled={isSubmitDisabled}
-        >
-          <Play size={24} /> Começar
-        </button>
+        {activeCycle ? (
+          <button
+            className="flex w-full items-center justify-center gap-2 rounded-lg bg-red-500 p-4 font-bold text-gray-100 transition-colors hover:bg-red-700"
+            type="button"
+            onClick={handleInterruptCycle}
+          >
+            <HandPalm size={24} /> Interromper
+          </button>
+        ) : (
+          <button
+            className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-500 p-4 font-bold text-gray-100 transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:bg-green-500"
+            type="submit"
+            disabled={isSubmitDisabled}
+          >
+            <Play size={24} /> Começar
+          </button>
+        )}
       </form>
     </main>
   )
