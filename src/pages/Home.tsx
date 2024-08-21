@@ -1,19 +1,48 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Play } from 'phosphor-react'
-
+import { useForm } from 'react-hook-form'
+import * as zod from 'zod'
 import { CountdownNumber, CountdownSeparator } from '../components/Countdown'
-import { Input } from '../components/Input'
+
+const newCycleFormValidationSchema = zod.object({
+  task: zod.string().min(1, 'Informe a tarefa!'),
+  minutesAmount: zod.number().min(5).max(60),
+})
+
+type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
 
 export function Home() {
+  const { register, handleSubmit, watch, reset } = useForm<NewCycleFormData>({
+    resolver: zodResolver(newCycleFormValidationSchema),
+    defaultValues: {
+      task: '',
+      minutesAmount: 0,
+    },
+  })
+
+  function handleCreateNewCycle(data: NewCycleFormData) {
+    console.log(data)
+    reset()
+  }
+
+  const task = watch('task')
+  const isSubmitDisabled = !task
+
   return (
     <main className="flex flex-1 flex-col items-center justify-center">
-      <form className="flex flex-col items-center gap-14" action="">
+      <form
+        onSubmit={handleSubmit(handleCreateNewCycle)}
+        className="flex flex-col items-center gap-14"
+        action=""
+      >
         <div className="flex w-full flex-wrap items-center justify-center gap-2 text-lg font-bold text-gray-100">
           <label htmlFor="task">Vou trabalhar em</label>
-          <Input
-            variant="task"
+          <input
             id="task"
+            className="picker-none flex-1"
             list="task-suggestions"
             placeholder="Dê um nome para o seu projeto"
+            {...register('task')}
           />
 
           <datalist id="task-suggestions">
@@ -24,14 +53,15 @@ export function Home() {
           </datalist>
 
           <label htmlFor="minutesAmount">durante</label>
-          <Input
-            variant="minutes"
+          <input
             id="minutesAmount"
+            className="w-16"
             type="number"
             placeholder="00"
             step={5}
             min={5}
             max={60}
+            {...register('minutesAmount', { valueAsNumber: true })}
           />
 
           <span>minutos.</span>
@@ -48,7 +78,7 @@ export function Home() {
         <button
           className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-500 p-4 font-bold text-gray-100 transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:bg-green-500"
           type="submit"
-          disabled
+          disabled={isSubmitDisabled}
         >
           <Play size={24} /> Começar
         </button>
