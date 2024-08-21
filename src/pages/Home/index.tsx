@@ -6,7 +6,9 @@ import { HandPalm, Play } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
 import * as zod from 'zod'
 
-import { CountdownNumber, CountdownSeparator } from '../components/Countdown'
+import { Button } from '../../components/Button'
+import { Countdown } from './components/Countdown'
+import { NewCycleForm } from './components/NewCycleForm'
 
 const newCycleFormValidationSchema = zod.object({
   task: zod.string().min(1, 'Informe a tarefa!'),
@@ -131,64 +133,17 @@ export function Home() {
         className="flex flex-col items-center gap-14"
         action=""
       >
-        <div className="flex w-full flex-wrap items-center justify-center gap-2 text-lg font-bold text-gray-100">
-          <label htmlFor="task">Vou trabalhar em</label>
-          <input
-            id="task"
-            className="picker-none flex-1"
-            list="task-suggestions"
-            placeholder="Dê um nome para o seu projeto"
-            disabled={!!activeCycle}
-            {...register('task')}
-          />
-
-          <datalist id="task-suggestions">
-            <option value="Projeto 1" />
-            <option value="Projeto 2" />
-            <option value="Projeto 3" />
-            <option value="Banana" />
-          </datalist>
-
-          <label htmlFor="minutesAmount">durante</label>
-          <input
-            id="minutesAmount"
-            className="w-16"
-            type="number"
-            placeholder="00"
-            step={5}
-            min={1}
-            max={60}
-            disabled={!!activeCycle}
-            {...register('minutesAmount', { valueAsNumber: true })}
-          />
-
-          <span>minutos.</span>
-        </div>
-
-        <div className="flex gap-4 font-mono text-[10rem] leading-[8rem] text-gray-100">
-          <CountdownNumber>{minutes[0]}</CountdownNumber>
-          <CountdownNumber>{minutes[1]}</CountdownNumber>
-          <CountdownSeparator />
-          <CountdownNumber>{seconds[0]}</CountdownNumber>
-          <CountdownNumber>{seconds[1]}</CountdownNumber>
-        </div>
+        <NewCycleForm />
+        <Countdown />
 
         {activeCycle ? (
-          <button
-            className="flex w-full items-center justify-center gap-2 rounded-lg bg-red-500 p-4 font-bold text-gray-100 transition-colors hover:bg-red-700"
-            type="button"
-            onClick={handleInterruptCycle}
-          >
+          <Button variant="pause" type="button" onClick={handleInterruptCycle}>
             <HandPalm size={24} /> Interromper
-          </button>
+          </Button>
         ) : (
-          <button
-            className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-500 p-4 font-bold text-gray-100 transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:bg-green-500"
-            type="submit"
-            disabled={isSubmitDisabled}
-          >
+          <Button variant="play" type="submit" disabled={isSubmitDisabled}>
             <Play size={24} /> Começar
-          </button>
+          </Button>
         )}
       </form>
     </main>

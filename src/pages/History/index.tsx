@@ -1,4 +1,4 @@
-import Status from '../components/Status'
+import Status from '../../components/Status'
 
 export function History() {
   return (
