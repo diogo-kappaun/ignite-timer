@@ -29,7 +29,12 @@ export function Home() {
     },
   })
 
-  const { handleSubmit, watch /* reset */ } = newCycleForm
+  const { handleSubmit, watch, reset } = newCycleForm
+
+  function handleCreateNewCycle(data: NewCycleFormData) {
+    createNewCycle(data)
+    reset()
+  }
 
   const task = watch('task')
 
@@ -38,7 +43,7 @@ export function Home() {
   return (
     <main className="flex flex-1 flex-col items-center justify-center">
       <form
-        onSubmit={handleSubmit(createNewCycle)}
+        onSubmit={handleSubmit(handleCreateNewCycle)}
         className="flex flex-col items-center gap-14"
         action=""
       >
