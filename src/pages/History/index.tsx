@@ -1,9 +1,15 @@
+import { useContext } from 'react'
 import Status from '../../components/Status'
+import { CyclesContext } from '../../contexts/CyclesContext'
 
 export function History() {
+  const { cycles } = useContext(CyclesContext)
+
   return (
     <main className="flex flex-1 flex-col p-14">
       <h1 className="text-2xl text-gray-100">Meu histórico</h1>
+
+      <pre>{JSON.stringify(cycles, null, 2)}</pre>
 
       <div className="mt-8 flex-1 overflow-auto">
         <table className="w-full min-w-[600px] border-collapse">
